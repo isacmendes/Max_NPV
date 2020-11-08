@@ -1,0 +1,1 @@
+wm title .window "Isac" 
