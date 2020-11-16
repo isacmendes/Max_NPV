@@ -15,7 +15,6 @@ sys.setrecursionlimit(25000)
 # import igraph as ig
 
 def Batch_ET_RS_SAA_HS():
-    #TESTE...
     #pkg_graph = import_graph('Samples/Lotes_2a_Rodada/Lote_1')
     pkg_graph = import_graph('Samples')
     pkg_et_RS = {}

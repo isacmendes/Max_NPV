@@ -53,6 +53,7 @@ def Write_File(nr_graph,
 
 
 def Bacth_Generator(n_iterations=1):
+    global t3, t4
     # Graph parameters
     # MIN_PER_LAYER = 4
     # MAX_PER_LAYER = 4
@@ -87,7 +88,7 @@ def Bacth_Generator(n_iterations=1):
     MAX_PER_LAYER = 32
     MIN_LAYERS = 32
     MAX_LAYERS = 32
-    EDGE_PROB = 100
+    EDGE_PROB = 15
 
     # Node parameters
     MIN_DUR = 5
@@ -128,6 +129,7 @@ def Bacth_Generator(n_iterations=1):
 
         graph.add_vertices(start)
 
+        t3 = time.time()
         for i_layer in range(len(vertex_for_layer)):
             for i_vertex in vertex_for_layer[i_layer]:
                 # if pd.notna(i_vertex):
@@ -135,7 +137,9 @@ def Bacth_Generator(n_iterations=1):
                 next_layer = i_layer + 1
                 nodes.append(i_vertex)
                 #g.add_vertex(name=i_vertex)
+                t3 = time.time()
                 while next_layer < len(vertex_for_layer):
+
                     for j_vertex in vertex_for_layer[next_layer]:
                         # if pd.notna(j_vertex):
                         #     g.add_vertex(int(j_vertex))
@@ -143,6 +147,7 @@ def Bacth_Generator(n_iterations=1):
                             edges.append((int(i_vertex)-1, int(j_vertex)-1))
                             graph.add_edge(int(i_vertex)-1, int(j_vertex)-1)
                     next_layer += 1
+        #t4 = time.time()
 
         # Connects all vertices on the first layer with the initial dummy
         for i_vertex in vertex_for_layer[0]:
@@ -223,13 +228,13 @@ def Bacth_Generator(n_iterations=1):
         #visual_style["target"] = cairo.Surface
         # Set the layout
         #my_layout = g.layout_lgl()
-        #my_layout = graph.layout_reingold_tilford(root=0)
+        my_layout = graph.layout_reingold_tilford(root=0)
         #my_layout = graph.layout_fruchterman_reingold()
         #my_layout = graph.layout_reingold_tilford()
         #my_layout = graph.layout_circle()
         #my_layout = g.layout_kamada_kawai()
         #my_layout = graph.layout_auto()
-        my_layout = graph.layout_random()
+        #my_layout = graph.layout_random()
         #my_layout = graph.layout_grid()
         #my_layout = graph.layout_grid_fruchterman_reingold()
         #my_layout = graph.layout_davidson_harel()
@@ -266,3 +271,4 @@ Bacth_Generator(1)
 
 t2 = time.time()
 print("Run time: ", t2-t1)
+print("Core time ", t4-t3)
