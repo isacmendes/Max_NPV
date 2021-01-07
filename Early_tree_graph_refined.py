@@ -2,7 +2,8 @@
 
 from ImportGraph import import_graph
 from PluginGraph.Plotter import *
-
+import igraph as ig
+from Gerador_v2.Generator_vect import style_plot
 
 def forward_pass(graph, client_algorithm="RS", file_name="Not informed!"):
     """
@@ -35,6 +36,7 @@ def forward_pass(graph, client_algorithm="RS", file_name="Not informed!"):
     early_tree.deadline = graph.deadline
     early_tree.file_name = file_name
     early_tree.remove_edges_from(graph.edges)
+    early_tree.discounted_rate = graph.discounted_rate
 
     # Defines start dummy earliest start with 0
     early_tree.nodes[1]['EF'] = 0
@@ -83,6 +85,24 @@ def forward_pass(graph, client_algorithm="RS", file_name="Not informed!"):
     #plt_general("Early Tree", 0.00, early_tree)
     # for node in early_tree.nodes:
     #     print('node: ', node, ' EF: ', early_tree.nodes[node]['EF'])
+
+
+    # graph_ig = ig.Graph(directed=True)
+    # graph_ig.add_vertices(len(early_tree.nodes))
+    # #graph_ig.add_edges(graph.edges)
+    # for edge in early_tree.edges:
+    #     graph_ig.add_edge(edge[0]-1, edge[1]-1)
+    #
+    # #Adds labels
+    # for i in range(len(graph_ig.vs)):
+    #     graph_ig.vs[i]["id"] = i + 1
+    #     graph_ig.vs[i]["label"] = str(i + 1)
+    #
+    # if client_algorithm == "RS":
+    #     ig.plot(graph_ig, **style_plot(graph_ig))
+    #     print("Graph with edges:", len(graph.edges))
+
+
     return early_tree
 
 

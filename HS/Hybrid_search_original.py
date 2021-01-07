@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from Early_tree_graph_refined import main as early_tree_main
 from PluginGraph.Plotter import *
+import time
 
 
 def Hybrid_search():
-    global ct, graph, CA, SS, call_HS
+    global ct, graph, CA, SS, call_HS, DC_FINAL
     call_HS += 1
 
     CA = set()
@@ -18,8 +19,8 @@ def Hybrid_search():
         DC_FINAL = 0.00
 
         for node in range(1, ct.number_of_nodes() + 1):
-            DC_FINAL += ct.nodes[node]['CF'] / ((1 + 0.01) ** (ct.nodes[node]['EF']))
-        #print("The optimal solution is %d" % DC_FINAL)
+            DC_FINAL += ct.nodes[node]['CF'] / ((1 + DISCOUNTED_RATE) ** (ct.nodes[node]['EF']))
+        print("HS - The optimal solution is %d" % DC_FINAL)
 
         # plt_17("Original HS", DC_FINAL, ct)
         #plt_general("Original HS", DC_FINAL, ct)
@@ -30,9 +31,11 @@ def Recursion(node):
     global SS, ct, call_Rec
     call_Rec += 1
     SA = {node}
-    DC = ct.nodes[node]['CF'] / ((1 + 0.01) ** (ct.nodes[node]['EF']))
+    #DC = ct.nodes[node]['CF'] / ((1 + 0.01) ** (ct.nodes[node]['EF']))
+    DC = ct.nodes[node]['CF'] / ((1 + DISCOUNTED_RATE) ** (ct.nodes[node]['EF']))
     CA.add(node)
 
+    #print("HS Node: ", node, " visited!")
     for i in list(ct.successors(node)):
         if i not in CA:
             SA_l, DC_l = Recursion(i)
@@ -62,6 +65,7 @@ def Shift_activities(SS_l):
             Z.append(i)
 
     while Z != []:
+        #print("Z: ", Z)
         k, l, V_k_l = Compute_V_k_l(Z)
         for SA_l in SS_l:
             if k in SA_l:
@@ -114,7 +118,9 @@ def Compute_V_k_l(Z):
 
 
 def main(current_tree, original_graph):
-    global ct, graph, call_HS, call_Rec, call_Compute, it_Compute, call_Shift, it_Shift
+    global ct, graph, call_HS, call_Rec, call_Compute, it_Compute, call_Shift, it_Shift, DISCOUNTED_RATE
+
+    DISCOUNTED_RATE = float(current_tree.discounted_rate)/100
 
     # ct, graph = early_tree_main("HS")
     ct = current_tree
@@ -122,7 +128,16 @@ def main(current_tree, original_graph):
     call_HS, call_Rec, call_Shift, it_Shift, call_Compute, it_Compute = 0, 0, 0, 0, 0, 0
     # plt_general("Original HS", 0, current_tree)
 
+    # Get all cash flow
+    cfs = np.array([x['CF'] for x in dict(graph.nodes.data()).values()])
+
+    # Get Early Finish of the ultimate task
+    #EF_penul_activity = ct.nodes[len(ct)]['EF']
+    EF_penul_activity = max(np.array([x['EF'] for x in dict(ct.nodes.data()).values()])[1:-1])
+
+    t1 = time.time()
     Hybrid_search()
+    t2 = time.time()
 
     # print("-----------\nCONTADORES:\n-----------")
     # print("Chamadas recursivas Hybrid_search(): ", total_HS)
@@ -136,24 +151,46 @@ def main(current_tree, original_graph):
     #recursion_calls = call_HS + call_Rec
     recursion_calls = call_Rec
 
-    # print('-' * 30)
-    # print('HS')
-    # print('total_main: ', total_HS)
-    # print('total_Rec: ', total_Rec)
-    # print('total_compute: ', total_compute)
-    # print('-' * 30)
-    # print('id ct: ', id(ct))
-    return iterations, \
-           recursion_calls, \
-           call_HS, \
-           call_Rec, \
-           call_Shift, \
-           it_Shift, \
-           call_Compute, \
-           it_Compute, \
-           graph.number_of_nodes(), \
-           graph.number_of_edges()
+    unit_effort = call_Rec + it_Shift + it_Compute
 
+    return graph.number_of_nodes(), \
+           graph.number_of_edges(), \
+           nx.diameter(graph), \
+           max(list(dict(graph.in_degree()).values())[1:-2]), \
+           min(list(dict(graph.in_degree()).values())[1:-2]), \
+           np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
+           max(list(dict(graph.out_degree()).values())[1:-2]), \
+           min(list(dict(graph.out_degree()).values())[1:-2]), \
+           np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
+           DISCOUNTED_RATE, \
+           len(cfs[cfs < 0]) / len(cfs) * 100, \
+           ct.deadline, \
+           EF_penul_activity, \
+           unit_effort, \
+           DC_FINAL, \
+           t2 - t1
+
+    # return graph.number_of_nodes(), \
+    #        graph.number_of_edges(), \
+    #        nx.diameter(graph), \
+    #        max(list(dict(graph.in_degree()).values())[1:-2]), \
+    #        min(list(dict(graph.in_degree()).values())[1:-2]), \
+    #        np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
+    #        max(list(dict(graph.out_degree()).values())[1:-2]), \
+    #        min(list(dict(graph.out_degree()).values())[1:-2]), \
+    #        np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
+    #        DISCOUNTED_RATE, \
+    #        len(cfs[cfs < 0]) / len(cfs) * 100, \
+    #        ct.deadline, \
+    #        EF_penul_activity, \
+    #        call_HS, \
+    #        call_Rec, \
+    #        call_Shift, \
+    #        it_Shift, \
+    #        call_Compute, \
+    #        it_Compute, \
+    #        DC_FINAL, \
+    #        t2 - t1
 
 #call_HS, call_Rec, call_Shift, it_Shift, call_Compute, it_Compute = 0, 0, 0, 0, 0, 0
 

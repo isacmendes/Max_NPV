@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from Early_tree_graph_refined import main as early_tree_main
 from PluginGraph.Plotter import *
+import time
+import sys
+sys.setrecursionlimit(19000000)
 
 global CA, SS
 
@@ -12,13 +15,16 @@ def Step_3():
     Recursion(1)
 
 def Recursion(node):
-    global CA, total_Recursion, it_Shift
+    global CA, total_Recursion, it_Shift, DISCOUNTED_RATE
     total_Recursion += 1
 
     SA = {node}
-    DC = ct.nodes[node]['CF'] / ((1 + 0.01) ** (ct.nodes[node]['EF']))
+    DC = ct.nodes[node]['CF'] / ((1 + DISCOUNTED_RATE) ** (ct.nodes[node]['EF']))
     CA.add(node)
-    #print('node: ', node)
+    # print('node RS: ', node)
+    # print('edges: ', len(ct.edges))
+
+    #graph = nx.DiGraph()
 
     ct_suc = list(ct.successors(node))
     for i in ct_suc:
@@ -74,21 +80,33 @@ def Compute_V_k_l(Z):
     return k, l, V_k_l
 
 def main(current_tree, original_graph):
-    global ct, graph, total_Step_3, total_Recursion, call_Compute, it_Compute, it_Shift
+    global ct, graph, total_Step_3, total_Recursion, call_Compute, it_Compute, it_Shift, DISCOUNTED_RATE
 
-    #total_Step_3, total_Recursion, total_Compute = 0, 0, 0
+    #plt_general("Original RS", 100, current_tree)
+
+    DISCOUNTED_RATE = float(current_tree.discounted_rate)/100
+
     total_Step_3, total_Recursion, call_Compute, it_Compute, it_Shift = 0, 0, 0, 0, 0
     #ct, graph = early_tree_main("RS")
     ct = current_tree
     graph = original_graph
 
+    # Get Early Finish of the penultimate task
+    EF_penul_activity = max(np.array([x['EF'] for x in dict(ct.nodes.data()).values()])[1:-2])
 
+    t1 = time.time()
     Step_3()
+    t2 = time.time()
 
     DC_FINAL = 0.00
     for node in range(1, ct.number_of_nodes() + 1):
-        DC_FINAL += ct.nodes[node]['CF'] / ((1 + 0.01) ** (ct.nodes[node]['EF']))
-    #print('DC_FINAL: ', DC_FINAL)
+        DC_FINAL += ct.nodes[node]['CF'] / ((1 + DISCOUNTED_RATE) ** (ct.nodes[node]['EF']))
+    print('RS - DC_FINAL: ', DC_FINAL)
+
+    # Get all cash flow
+    cfs = np.array([x['CF'] for x in dict(graph.nodes.data()).values()])
+
+
     # print("-----------\nCONTADORES:\n-----------")
     # print("Chamadas recursivas Step_3(): ", total_Step_3)
     # print("Chamadas recursivas Recursion(): ", total_Recursion)
@@ -104,25 +122,50 @@ def main(current_tree, original_graph):
     #recursion_calls = total_Step_3 + total_Recursion
     recursion_calls = 0 + total_Recursion
 
-    # print('-' * 30)
-    # print('RS')
-    # print('total_Step_3: ', total_Step_3)
-    # print('total_Recursion: ', total_Recursion)
-    # print('total_compute: ', total_Compute)
-    # print('-' * 30)
-    # print('id ct: ', id(ct))
 
-    return iterations, \
-           recursion_calls, \
-           total_Step_3, \
-           total_Recursion, \
-           it_Shift, \
-           it_Compute, \
-           call_Compute, \
-           graph.number_of_nodes(), \
-           graph.number_of_edges(), ct
+    # print('in ...', list(dict(graph.in_degree()).values()))
+    # print('out ...', list(dict(graph.in_degree()).values()))
+    # print('in ...', list(dict(graph.in_degree()).values()), np.sum(list(dict(graph.in_degree()).values())))
+    # print('out...', list(dict(graph.out_degree()).values()), np.sum(list(dict(graph.out_degree()).values())))
 
+    unit_effort = recursion_calls + it_Shift + it_Compute
 
+    return graph.number_of_nodes(), \
+           graph.number_of_edges(), \
+           nx.diameter(graph), \
+           max(list(dict(graph.in_degree()).values())[1:-2]), \
+           min(list(dict(graph.in_degree()).values())[1:-2]), \
+           np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
+           max(list(dict(graph.out_degree()).values())[1:-2]), \
+           min(list(dict(graph.out_degree()).values())[1:-2]), \
+           np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
+           DISCOUNTED_RATE, \
+           len(cfs[cfs<0])/len(cfs)*100, \
+           ct.deadline, \
+           EF_penul_activity, \
+           unit_effort, \
+           DC_FINAL, \
+           t2 - t1
 
+    # return graph.number_of_nodes(), \
+    #        graph.number_of_edges(), \
+    #        nx.diameter(graph), \
+    #        max(list(dict(graph.in_degree()).values())[1:-2]), \
+    #        min(list(dict(graph.in_degree()).values())[1:-2]), \
+    #        np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
+    #        max(list(dict(graph.out_degree()).values())[1:-2]), \
+    #        min(list(dict(graph.out_degree()).values())[1:-2]), \
+    #        np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
+    #        DISCOUNTED_RATE, \
+    #        len(cfs[cfs<0])/len(cfs)*100, \
+    #        ct.deadline, \
+    #        EF_penul_activity, \
+    #        total_Step_3, \
+    #        recursion_calls, \
+    #        it_Shift, \
+    #        call_Compute, \
+    #        it_Compute,\
+    #        DC_FINAL, \
+    #        t2 - t1
 
 #main()

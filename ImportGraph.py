@@ -22,8 +22,11 @@ def import_graph(my_path):
                 file = open(my_path + '/' + current_file_name, 'r')
                 file_lines = file.readlines()
 
+                # Get discounted rate
+                graph.discounted_rate = float(my_path.split('-')[-3])
+
                 # Get deadline
-                if file_lines[0].split()[1] == 'E4':
+                if file_lines[0].split()[1] == 'E1':
                     graph.deadline = 1000
                 else:
                     graph.deadline = int(file_lines[0].split()[1])
@@ -79,6 +82,7 @@ def import_graph(my_path):
                 # Add current graph on the package
                 pkg_graph[current_file_name] = graph
                 print("On the file: ", graph.name)
+                print("Number of nodes is: ", len(graph.nodes))
                 print("Number of edges is: ", len(graph.edges))
             except Exception as e:
                 print("Problems with file: '%s'" % file.name)

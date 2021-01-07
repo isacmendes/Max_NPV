@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from Early_tree_graph_refined import main as early_tree_main
 from PluginGraph.Plotter import *
+import time
 
 
 def Steepest_Ascent_Direction():
-    global it_SAD
+    global it_SAD, DISCOUNTED_RATE
+
+    DISCOUNTED_RATE = float(st.discounted_rate)/100
 
     Z = []
     V = st.copy()
@@ -12,11 +15,12 @@ def Steepest_Ascent_Direction():
     for i in range(1, V.number_of_nodes() + 1):
         st.nodes[i]['C'] = []
         st.nodes[i]['C'].append(i)
-        st.nodes[i]['DC'] = st.nodes[i]['CF'] / ((1 + 0.01) ** (st.nodes[i]['EF']))
+        st.nodes[i]['DC'] = st.nodes[i]['CF'] / ((1 + DISCOUNTED_RATE) ** (st.nodes[i]['EF']))
         st.nodes[i]['CF_CUMULATIVE'] = st.nodes[i]['DC']
 
     while V.number_of_nodes() != 1:
         for i in list(V.nodes):
+            #print("SAA node: ", i)
             # For nodes other than 1
             if i is not 1:
                 it_SAD += 1
@@ -99,27 +103,37 @@ def Compute_V_k_l(Z):
 
 
 def main(spanning_tree, original_graph):
-    global st, graph, total_main, it_SAD, it_VA_EDGES, it_VA_shifts, it_Compute, call_Compute
+    global st, graph, total_main, it_SAD, it_VA_EDGES, it_VA_shifts, it_Compute, call_Compute, DISCOUTEND_RATE
 
     # st, graph = early_tree_main("SAA")
     # total_main += 1
     it_SAD, it_VA_EDGES, it_VA_shifts, it_Compute, call_Compute = 0, 0, 0, 0, 0
+    DISCOUTEND_RATE = float(spanning_tree.discounted_rate)/100
 
     st = spanning_tree
     graph = original_graph
 
+    # Get all cash flow
+    cfs = np.array([x['CF'] for x in dict(graph.nodes.data()).values()])
+
+    # Get Early Finish of the ultimate task
+    #EF_penul_activity = st.nodes[len(st)]['EF']
+
+    EF_penul_activity = max(np.array([x['EF'] for x in dict(st.nodes.data()).values()])[1:-1])
 
     call_SAD = 0
     call_VA = 0
+    t1 = time.time()
     while True:
         call_SAD += 1
         Z = Steepest_Ascent_Direction()
 
         if Z == []:
+            t2 = time.time()
             DC_FINAL = 0.00
             for node in range(1, st.number_of_nodes() + 1):
-                DC_FINAL += st.nodes[node]['CF'] / ((1 + 0.01) ** (st.nodes[node]['EF']))
-            #print("The optimal solution is %d" % DC_FINAL)
+                DC_FINAL += st.nodes[node]['CF'] / ((1 + DISCOUTEND_RATE) ** (st.nodes[node]['EF']))
+            print("SAA - The optimal solution is %d" % DC_FINAL)
             # plt_17("Original SAA", DC_FINAL, st)
             #plt_general("Original SAA", DC_FINAL, st)
             # plt_main_example("Original RS", DC_FINAL, st)
@@ -137,27 +151,59 @@ def main(spanning_tree, original_graph):
             #iterations = it_SAD + 0 + it_VA_shifts + it_Compute
             recursion_calls = 0
 
-            # print('-' * 30)
-            # print('SAA')
-            # print('total_main: ', total_main)
-            # print('total_SAD: ', total_SAD)
-            # print('total_VA_EDGES: ', total_VA_EDGES)
-            # print('total_VA_shifts: ', total_VA_shifts)
-            # print('total_compute: ', total_compute)
-            # print('-' * 30)
-            # print('id st: ', id(st))
+            # return iterations, \
+            #        recursion_calls, \
+            #        it_SAD, \
+            #        call_SAD, \
+            #        it_VA_EDGES, \
+            #        it_VA_shifts, \
+            #        call_VA, \
+            #        it_Compute, \
+            #        call_Compute, \
+            #        graph.number_of_nodes(), \
+            #        graph.number_of_edges()
 
-            return iterations, \
-                   recursion_calls, \
-                   it_SAD, \
-                   call_SAD, \
-                   it_VA_EDGES, \
-                   it_VA_shifts, \
-                   call_VA, \
-                   it_Compute, \
-                   call_Compute, \
-                   graph.number_of_nodes(), \
-                   graph.number_of_edges()
+            unit_effort = it_SAD + it_VA_EDGES + it_VA_shifts + it_Compute
+
+            return graph.number_of_nodes(), \
+                   graph.number_of_edges(), \
+                   nx.diameter(graph), \
+                   max(list(dict(graph.in_degree()).values())[1:-2]), \
+                   min(list(dict(graph.in_degree()).values())[1:-2]), \
+                   np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
+                   max(list(dict(graph.out_degree()).values())[1:-2]), \
+                   min(list(dict(graph.out_degree()).values())[1:-2]), \
+                   np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
+                   DISCOUNTED_RATE, \
+                   len(cfs[cfs < 0]) / len(cfs) * 100, \
+                   st.deadline, \
+                   EF_penul_activity, \
+                   unit_effort, \
+                   DC_FINAL, \
+                   t2 - t1
+
+            # return graph.number_of_nodes(), \
+            #        graph.number_of_edges(), \
+            #        nx.diameter(graph), \
+            #        max(list(dict(graph.in_degree()).values())[1:-2]), \
+            #        min(list(dict(graph.in_degree()).values())[1:-2]), \
+            #        np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
+            #        max(list(dict(graph.out_degree()).values())[1:-2]), \
+            #        min(list(dict(graph.out_degree()).values())[1:-2]), \
+            #        np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
+            #        DISCOUNTED_RATE, \
+            #        len(cfs[cfs < 0]) / len(cfs) * 100, \
+            #        st.deadline, \
+            #        EF_penul_activity, \
+            #        it_SAD, \
+            #        call_SAD, \
+            #        it_VA_EDGES, \
+            #        it_VA_shifts, \
+            #        call_VA, \
+            #        it_Compute, \
+            #        call_Compute, \
+            #        DC_FINAL, \
+            #        t2 - t1
 
         else:
             call_VA += 1

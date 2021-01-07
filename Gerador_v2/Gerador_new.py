@@ -88,7 +88,7 @@ def Bacth_Generator(n_iterations=1):
     MAX_PER_LAYER = 32
     MIN_LAYERS = 32
     MAX_LAYERS = 32
-    EDGE_PROB = 15
+    EDGE_PROB = 1
 
     # Node parameters
     MIN_DUR = 5
@@ -112,7 +112,7 @@ def Bacth_Generator(n_iterations=1):
         elif MIN_LAYERS == MAX_LAYERS:
             n_layers = np.random.randint(MIN_LAYERS, MAX_LAYERS + 1)
         else:
-            n_layers = np.random.randint(MIN_LAYERS, MAX_LAYERS )
+            n_layers = np.random.randint(MIN_LAYERS, MAX_LAYERS)
 
         # Randomize the vertex number per layer
         for i_layer in range(1, n_layers + 1):

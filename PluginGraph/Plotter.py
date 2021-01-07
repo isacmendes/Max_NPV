@@ -71,6 +71,7 @@ def plt_general(algo_name=None, DC_FINAL=0, ct=None):
     nx.draw_networkx(ct, nx.circular_layout(ct), with_labels=True)
     #nx.draw_networkx(ct, nx.planar_layout(ct), with_labels=True)
     #nx.draw_networkx(ct, nx.fruchterman_reingold_layout(ct), with_labels=True)
+    #nx.draw_networkx(ct, nx.fruchterman_reingold_layout(ct), with_labels=True)
 
     if algo_name != None:
         plt.title('Scheduled ' + str(algo_name) + '\n File name: ' + ct.file_name)
