@@ -31,6 +31,7 @@ def Steepest_Ascent_Direction():
                     st.nodes[j]['CF_CUMULATIVE'] += st.nodes[i]['CF_CUMULATIVE']
                     st.nodes[j]['C'].extend(st.nodes[i]['C'])
                     V.remove_node(i)
+                    break
 
                 # For a node with only a predecessor and without successor
                 elif len(list(V.predecessors(i))) == 1 and len(list(V.successors(i))) == 0:
@@ -43,7 +44,7 @@ def Steepest_Ascent_Direction():
                         st.nodes[i]['CF_CUMULATIVE'] += st.nodes[j]['CF_CUMULATIVE']
                         st.nodes[i]['C'].extend(st.nodes[j]['C'])
                     V.remove_node(j)
-
+                    break
     return Z
 
 
@@ -133,7 +134,7 @@ def main(spanning_tree, original_graph):
             DC_FINAL = 0.00
             for node in range(1, st.number_of_nodes() + 1):
                 DC_FINAL += st.nodes[node]['CF'] / ((1 + DISCOUTEND_RATE) ** (st.nodes[node]['EF']))
-            print("SAA - The optimal solution is %d" % DC_FINAL)
+            #print("SAA - The optimal solution is %d" % DC_FINAL)
             # plt_17("Original SAA", DC_FINAL, st)
             #plt_general("Original SAA", DC_FINAL, st)
             # plt_main_example("Original RS", DC_FINAL, st)
@@ -146,24 +147,20 @@ def main(spanning_tree, original_graph):
             # print("Iterações Compute_V_K_l(): ", total_compute)
             # print('Total geral', total_main + total_SAD + total_VA_EDGES + total_VA_shifts + total_compute)
 
-            #iterations = it_SAD + 0 + 0 + it_Compute
-            iterations = it_SAD + it_VA_EDGES + it_VA_shifts + it_Compute
-            #iterations = it_SAD + 0 + it_VA_shifts + it_Compute
-            recursion_calls = 0
-
-            # return iterations, \
-            #        recursion_calls, \
-            #        it_SAD, \
-            #        call_SAD, \
-            #        it_VA_EDGES, \
-            #        it_VA_shifts, \
-            #        call_VA, \
-            #        it_Compute, \
-            #        call_Compute, \
-            #        graph.number_of_nodes(), \
-            #        graph.number_of_edges()
+            # #iterations = it_SAD + 0 + 0 + it_Compute
+            # iterations = it_SAD + it_VA_EDGES + it_VA_shifts + it_Compute
+            # #iterations = it_SAD + 0 + it_VA_shifts + it_Compute
+            # iterations = it_SAD + 0 + it_VA_shifts
+            # recursion_calls = 0
 
             unit_effort = it_SAD + it_VA_EDGES + it_VA_shifts + it_Compute
+            # unit_effort = it_SAD + it_VA_shifts + it_Compute
+            #unit_effort = it_SAD + it_VA_EDGES + it_Compute
+            # unit_effort = it_SAD + it_VA_shifts
+            #unit_effort = it_SAD + it_Compute
+            #unit_effort = it_SAD
+            #unit_effort = call_SAD + call_VA + call_Compute
+
 
             return graph.number_of_nodes(), \
                    graph.number_of_edges(), \
@@ -180,36 +177,11 @@ def main(spanning_tree, original_graph):
                    EF_penul_activity, \
                    unit_effort, \
                    DC_FINAL, \
-                   t2 - t1
-
-            # return graph.number_of_nodes(), \
-            #        graph.number_of_edges(), \
-            #        nx.diameter(graph), \
-            #        max(list(dict(graph.in_degree()).values())[1:-2]), \
-            #        min(list(dict(graph.in_degree()).values())[1:-2]), \
-            #        np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
-            #        max(list(dict(graph.out_degree()).values())[1:-2]), \
-            #        min(list(dict(graph.out_degree()).values())[1:-2]), \
-            #        np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
-            #        DISCOUNTED_RATE, \
-            #        len(cfs[cfs < 0]) / len(cfs) * 100, \
-            #        st.deadline, \
-            #        EF_penul_activity, \
-            #        it_SAD, \
-            #        call_SAD, \
-            #        it_VA_EDGES, \
-            #        it_VA_shifts, \
-            #        call_VA, \
-            #        it_Compute, \
-            #        call_Compute, \
-            #        DC_FINAL, \
-            #        t2 - t1
+                   float(t2 - t1)
 
         else:
             call_VA += 1
             Vertex_Ascent(Z)
 
-
 #it_SAD, it_VA_EDGES, it_VA_shifts, it_Compute, call_Compute = 0, 0, 0, 0, 0
-
 # main()

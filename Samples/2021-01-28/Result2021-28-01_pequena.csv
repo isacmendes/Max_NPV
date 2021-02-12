@@ -1,0 +1,1 @@
+batch,instance,algo,vertices,layer,fan,disRate,percNeg,cpMult,g_vertices,g_edges,g_diameter,g_max in degree,g_min in degree,g_mean in degree,g_max out degree,g_min out degree,g_mean out degree,g_disRate,g_perc Negative,g_deadline,g_last task Early Finish,effort,NPV,time

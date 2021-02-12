@@ -3,7 +3,7 @@ from Early_tree_graph_refined import main as early_tree_main
 from PluginGraph.Plotter import *
 import time
 import sys
-sys.setrecursionlimit(19000000)
+sys.setrecursionlimit(590000000)
 
 global CA, SS
 
@@ -29,6 +29,9 @@ def Recursion(node):
     ct_suc = list(ct.successors(node))
     for i in ct_suc:
         if i not in CA:
+            ############################################################################################################
+            # Encontrar em conjunto como 'union-find disjoint-set considerar em tempo O(1)'. Verificar método de Python.
+            ############################################################################################################
             SA_l, DC_l = Recursion(i)
             if DC_l >= 0:
                 SA = SA.union(sorted(SA_l))
@@ -40,14 +43,23 @@ def Recursion(node):
                     it_Shift += 1
                     ct.nodes[element]['EF'] += V_k_l
                 ct.add_edge(k, l)
+                ###########################
+                # Custo da adição da aresta
+                ###########################
 
                 if (node, i) in ct.edges:
                     ct.remove_edge(node, i)
+                    #############################
+                    # Custo da adição da remoção
+                    #############################
                 Step_3()
 
     ct_pred = list(ct.predecessors(node))
     for j in ct_pred:
         if j not in CA:
+            ############################################################################################################
+            # Encontrar em conjunto como 'union-find disjoint-set considerar em tempo O(1)'. Verificar método de Python.
+            ############################################################################################################
             SA_l, DC_l = Recursion(j)
             SA = SA.union(sorted(SA_l))
             DC += DC_l
@@ -56,15 +68,16 @@ def Recursion(node):
 
 def Compute_V_k_l(Z):
     global call_Compute, it_Compute
-
     call_Compute += 1
     V_k_l = 0
-
     min_distance = ct.deadline
     for pred in Z:
         for suc in graph.successors(pred):
             it_Compute += 1
             if suc not in Z:
+                ##############################################
+                # Incluir o custo do 'in', usando union find #
+                ##############################################
                 s_k = ct.nodes[pred]['EF'] - ct.nodes[pred]['DURATION']
                 d_k = ct.nodes[pred]['DURATION']
                 s_l = ct.nodes[suc]['EF'] - ct.nodes[suc]['DURATION']
@@ -145,27 +158,7 @@ def main(current_tree, original_graph):
            EF_penul_activity, \
            unit_effort, \
            DC_FINAL, \
-           t2 - t1
+           float(t2 - t1)
 
-    # return graph.number_of_nodes(), \
-    #        graph.number_of_edges(), \
-    #        nx.diameter(graph), \
-    #        max(list(dict(graph.in_degree()).values())[1:-2]), \
-    #        min(list(dict(graph.in_degree()).values())[1:-2]), \
-    #        np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
-    #        max(list(dict(graph.out_degree()).values())[1:-2]), \
-    #        min(list(dict(graph.out_degree()).values())[1:-2]), \
-    #        np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
-    #        DISCOUNTED_RATE, \
-    #        len(cfs[cfs<0])/len(cfs)*100, \
-    #        ct.deadline, \
-    #        EF_penul_activity, \
-    #        total_Step_3, \
-    #        recursion_calls, \
-    #        it_Shift, \
-    #        call_Compute, \
-    #        it_Compute,\
-    #        DC_FINAL, \
-    #        t2 - t1
 
 #main()

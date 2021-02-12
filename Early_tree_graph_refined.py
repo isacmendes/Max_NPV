@@ -3,7 +3,7 @@
 from ImportGraph import import_graph
 from PluginGraph.Plotter import *
 import igraph as ig
-from Gerador_v2.Generator_vect import style_plot
+#from Gerador_v2.Generator_vect import style_plot
 
 def forward_pass(graph, client_algorithm="RS", file_name="Not informed!"):
     """
@@ -74,10 +74,6 @@ def forward_pass(graph, client_algorithm="RS", file_name="Not informed!"):
         for i in graph.successors(j):
             ES_i = early_tree.nodes[i]['EF'] - early_tree.nodes[i]['DURATION']
             ES_j = early_tree.nodes[early_tree.nodes[j]['NODE_MIN_CONSTRAINT']]['EF'] - early_tree.nodes[early_tree.nodes[j]['NODE_MIN_CONSTRAINT']]['DURATION']
-            # if (early_tree.nodes[i]['EF'] - early_tree.nodes[i]['DURATION']) < \
-            #         (early_tree.nodes[early_tree.nodes[j]['NODE_MIN_CONSTRAINT']]['EF'] -
-            #          early_tree.nodes[early_tree.nodes[j]['NODE_MIN_CONSTRAINT']]['DURATION']):
-            #     early_tree.nodes[j]['NODE_MIN_CONSTRAINT'] = i
             if ES_i < ES_j:
                 early_tree.nodes[j]['NODE_MIN_CONSTRAINT'] = i
 
@@ -101,6 +97,14 @@ def forward_pass(graph, client_algorithm="RS", file_name="Not informed!"):
     # if client_algorithm == "RS":
     #     ig.plot(graph_ig, **style_plot(graph_ig))
     #     print("Graph with edges:", len(graph.edges))
+
+    # # Find biggest end data
+    # early_tree.biggest_end = 0
+    # for i in early_tree.nodes():
+    #     if early_tree.biggest_end < early_tree.nodes[i]['EF']:
+    #         early_tree.biggest_end = early_tree.nodes[i]['EF']
+
+
 
 
     return early_tree

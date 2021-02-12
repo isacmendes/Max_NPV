@@ -23,14 +23,24 @@ def import_graph(my_path):
                 file_lines = file.readlines()
 
                 # Get discounted rate
-                graph.discounted_rate = float(my_path.split('-')[-3])
+                #graph.discounted_rate = float(my_path.split('-')[-3])
 
                 # Get deadline
-                if file_lines[0].split()[1] == 'E1':
+                if file_lines[0].split()[-1] == 'E1':
                     graph.deadline = 1000
+                elif file_lines[0].split()[-1] == 'E2':
+                    graph.deadline = 2000
                 else:
-                    graph.deadline = int(file_lines[0].split()[1])
+                    graph.deadline = int(file_lines[0].split()[-1])
                 nr_nodes = int(file_lines[0].split()[0])
+
+                # Get the others factors
+                graph.nNodes = int(file_lines[0].split()[0])
+                graph.nlayers = int(file_lines[0].split()[1])
+                graph.fan = file_lines[0].split()[2]
+                graph.discounted_rate = float(file_lines[0].split()[3])
+                graph.percNeg = float(file_lines[0].split()[4])
+                graph.cpMult = file_lines[0].split()[5]
 
                 # Add nodes on graph and define Cash Flow (CF) for start dummy
                 graph.add_nodes_from(range(1, nr_nodes))
@@ -50,6 +60,10 @@ def import_graph(my_path):
                     graph.nodes[node]['CF'] = float(line.split()[2])
                     graph.nodes[node]['ES'] = 0
                     graph.nodes[node]['EF'] = 0
+
+                    d = graph.nodes[node]['DURATION']
+                    print(d)
+
 
                 # Show some attributes
                 # print('Deadline is: %d' % graph.deadline)
@@ -81,9 +95,9 @@ def import_graph(my_path):
 
                 # Add current graph on the package
                 pkg_graph[current_file_name] = graph
-                print("On the file: ", graph.name)
-                print("Number of nodes is: ", len(graph.nodes))
-                print("Number of edges is: ", len(graph.edges))
+                # print("On the file: ", graph.name)
+                # print("Number of nodes is: ", len(graph.nodes))
+                # print("Number of edges is: ", len(graph.edges))
             except Exception as e:
                 print("Problems with file: '%s'" % file.name)
                 print("The error is: %s" % e)

@@ -112,7 +112,7 @@ def Bacth_Generator(n_iterations=1):
         else:
             n_layers = np.random.randint(MIN_LAYERS, MAX_LAYERS)
 
-        # Sort number per layer of vertices
+        # Sort number's vertices per layer
 
         # while c:
         #     ...: sorteio = []
@@ -124,6 +124,8 @@ def Bacth_Generator(n_iterations=1):
         #     ...: else:
         #     ...: c = False
         #     ...: print(soteio)
+        ######################################################################################
+
 
         layers = np.random.randint(MIN_PER_LAYER, MAX_PER_LAYER+1, n_layers)
         total_vertices = layers.sum()
@@ -136,7 +138,7 @@ def Bacth_Generator(n_iterations=1):
                                                  index=list(range(start, start + layers[idx_current_layer]))))
             vertex_for_layer.append(range(start, start + layers[idx_current_layer]))
 
-            # Adjacency vector matrix
+            # Adjacency matrix
             for vertex in range(start+layers[idx_current_layer], total_vertices + 1):
                 adjacency_h.insert(loc=len(adjacency_h.columns), column=vertex, value=np.nan)
 
@@ -226,8 +228,8 @@ def Bacth_Generator(n_iterations=1):
 # Main #
 ########
 
-# t1 = time.time()
-# Bacth_Generator(1)
-# t2 = time.time()
-#
-# print(t2 - t1)
+t1 = time.time()
+Bacth_Generator(1)
+t2 = time.time()
+
+print('Tempo decorrido: ', t2 - t1)

@@ -20,7 +20,7 @@ def Hybrid_search():
 
         for node in range(1, ct.number_of_nodes() + 1):
             DC_FINAL += ct.nodes[node]['CF'] / ((1 + DISCOUNTED_RATE) ** (ct.nodes[node]['EF']))
-        print("HS - The optimal solution is %d" % DC_FINAL)
+        #print("HS - The optimal solution is %d" % DC_FINAL)
 
         # plt_17("Original HS", DC_FINAL, ct)
         #plt_general("Original HS", DC_FINAL, ct)
@@ -152,6 +152,10 @@ def main(current_tree, original_graph):
     recursion_calls = call_Rec
 
     unit_effort = call_Rec + it_Shift + it_Compute
+    #unit_effort = call_Rec + it_Compute
+    #unit_effort = call_Rec + it_Shift
+    #unit_effort = call_Rec + call_Shift
+    #unit_effort = call_Rec
 
     return graph.number_of_nodes(), \
            graph.number_of_edges(), \
@@ -168,29 +172,7 @@ def main(current_tree, original_graph):
            EF_penul_activity, \
            unit_effort, \
            DC_FINAL, \
-           t2 - t1
-
-    # return graph.number_of_nodes(), \
-    #        graph.number_of_edges(), \
-    #        nx.diameter(graph), \
-    #        max(list(dict(graph.in_degree()).values())[1:-2]), \
-    #        min(list(dict(graph.in_degree()).values())[1:-2]), \
-    #        np.mean(list(dict(graph.in_degree()).values())[1:-2]), \
-    #        max(list(dict(graph.out_degree()).values())[1:-2]), \
-    #        min(list(dict(graph.out_degree()).values())[1:-2]), \
-    #        np.mean(list(dict(graph.out_degree()).values())[1:-2]), \
-    #        DISCOUNTED_RATE, \
-    #        len(cfs[cfs < 0]) / len(cfs) * 100, \
-    #        ct.deadline, \
-    #        EF_penul_activity, \
-    #        call_HS, \
-    #        call_Rec, \
-    #        call_Shift, \
-    #        it_Shift, \
-    #        call_Compute, \
-    #        it_Compute, \
-    #        DC_FINAL, \
-    #        t2 - t1
+           float(t2 - t1)
 
 #call_HS, call_Rec, call_Shift, it_Shift, call_Compute, it_Compute = 0, 0, 0, 0, 0, 0
 

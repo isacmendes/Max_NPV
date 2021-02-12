@@ -68,15 +68,18 @@ def Batch_ET_RS_SAA_HS(path, batch='TESTE'):
         for algorithm in algorithms:
             if algorithm == "SAA":
                 et_SAA = forward_pass(original_graph, "SAA", current_file_name)
+                # if et_SAA.deadline == 'G2':
+                #     et_SAA.deadline = et_SAA.biggest_end + et_SAA.biggest_end * int(path.split('-')[-1])
                 list_complement = list(SAA_main(et_SAA, original_graph))
             elif algorithm == "HS":
                 et_HS = forward_pass(original_graph, "HS", current_file_name)
                 list_complement = list(HS_main(et_HS, original_graph))
             else:
+                # continue
                 et_RS = forward_pass(original_graph, "RS", current_file_name)
                 list_complement = list(RS_main(et_RS, original_graph))
 
-            df_unique.loc[count] = [str(batch.split('-')[-6:-1]), current_file_name, algorithm] + \
+            df_unique.loc[count] = [str(batch.split('-')[-6:]), current_file_name, algorithm] + \
                                 [batch.split('-')[-6],
                                  batch.split('-')[-5],
                                  batch.split('-')[-4],
@@ -115,52 +118,6 @@ t1 = time.time()
 
 paths = []
 
-#paths.append('Samples/teste/16-6-3-10-20-1')
-
-# 36 lotes do professor EBER
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-4-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-4-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-4-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-4-4-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-6-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-6-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-6-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-6-4-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-8-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-8-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-8-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-8-4-25-50-1')
-#
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-4-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-4-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-4-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-4-4-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-6-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-6-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-6-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-6-4-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-8-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-8-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-8-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-64-8-4-25-50-1')
-
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-128-4-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-128-4-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-128-4-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-4-4-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-6-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-6-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-6-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-6-4-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-8-3-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-8-3-25-50-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-8-4-25-25-1')
-# paths.append('Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-8-4-25-50-1')
-
-# paths.append('C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-26/12-26-20-44-64-6-3-25-40-1')
-# paths.append('C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-26/12-26-20-44-64-6-3-25-60-1')
-# paths.append('C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-26/12-26-20-44-64-6-4-25-60-1')
-
 df_unique = pd.DataFrame(columns=
                          ['batch',
                           'instance',
@@ -197,25 +154,13 @@ df_unique = pd.DataFrame(columns=
 #     #excel_writer.close()
 
 
-#root_directory = 'Samples/Prof_Eber_22_11_20/Lotes/11-22-12-07-16-4-3-25-25-1'
-#root_directory = 'Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-6-4-25-50-1'
-#root_directory = 'Samples/Prof_Eber_22_11_20/Lotes/11-22-12-08-128-6-4-25-25-1'
-#root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-05-128-12-4-25-60-1'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-20-128-12-4-25-60-1'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-24-128-12-4-25-60-1'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-26-128-12-3-25-60-1'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-28-128-12-3-25-40-1'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-32-128-8-3-25-60-1'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-34-128-8-4-25-60-1'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-38-128-8-3-30-60-2'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-43-128-8-3-30-70-2'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29/12-29-21-55-128-8-3-30-90-2'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29_official/12-29-22-16-128-8-2-30-100-2'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29_official/12-29-22-38-128-126-3-30-100-2'
-# root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29_official/12-29-23-04-120-12-3-30-100-2'
-
 #root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2021-01-05/01-05-18-17-50-10-3-20-50-1'
-root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2021-01-06/'
+#root_directory = 'C:/Users/Dell/PycharmProjects/Gerador_R/Samples/2021-01-21/01-21-19-09-80-20-3-30-50-2'
+#root_directory = 'C:/Users/Dell/PycharmProjects/Gerador_R/Samples/2021-01-26/01-26-15-28-320-10-3-10-100-1'
+root_directory = 'C:/Users/Dell/PycharmProjects/Gerador_R/Samples/2021-01-26/01-26-17-50-320-10-3-10-90-1'
+root_directory = 'C:/Users/Dell/PycharmProjects/Gerador_R/Samples/2021-01-27_G130'
+root_directory = 'C:/Users/Dell/PycharmProjects/Gerador_R/Samples/2021-01-28'
+root_directory = 'C:/Users/Dell/PycharmProjects/Gerador_R/Samples/2021-01-28_pequena'
 #root_directory = 'C:/Users/Dell/PycharmProjects/untitled/Samples/2020-12-29_official'
 sub_directories = [d for d in listdir(root_directory) if isdir(join(root_directory, d))]
 if len(sub_directories) == 0:
@@ -225,10 +170,10 @@ else:
         paths.append(root_directory + '/' + current_sub_directory)
 
 count = 0
-for path in paths:
+for nr, path in enumerate(paths):
     #Batch_ET_RS_SAA_HS(path, path[14:])
     try:
-        print('BATCH: ', path)
+        print('BATCH ' + str(nr) + '/' + str(len(paths)) + ': ' + path)
         Batch_ET_RS_SAA_HS(path, path)
     except Exception as e:
         print(e)
@@ -238,9 +183,17 @@ for path in paths:
 #     df_unique.to_excel(excel_writer, sheet_name='SAA_HS_RS', engine='openpyxl', index=False)
 
 #file_name_result = 'Samples/2020-12-26' + '/Result2021-05-01_v2.csv'
-file_name_result = 'Samples/2021-01-06' + '/Result2021-06-01.csv'
-df_unique.to_csv(file_name_result, sep=',', encoding='utf-8', index=False)
+#file_name_result = 'Samples/2021-01-21' + '/Result2021-21-01_Last_batch_ss.csv'
+#file_name_result = 'Samples/2021-01-21' + '/Result2021-21-01_Last_batch_rec_itShift.csv'
+#file_name_result = 'Samples/2021-01-21' + '/Result2021-21-01_Last_batch_rec_function_calls.csv'
+#file_name_result_csv = 'Samples/2021-01-21' + '/Result2021-21-01_Last_batch.csv'
+file_name_result_csv = 'Samples/2021-01-28' + '/Result2021-28-01_pequena.csv'
+df_unique.to_csv(file_name_result_csv, sep=',', encoding='utf-8', index=False)
 
+#file_name_result_csv = 'Samples/2021-01-21' + '/Result2021-21-01_Last_batch.xlsx'
+file_name_result_xlsx = 'Samples/2021-01-28' + '/Result2021-28-01_pequena.xlsx'
+with pd.ExcelWriter(file_name_result_xlsx) as excel_writer:
+    df_unique.to_excel(excel_writer, sheet_name='SAA_HS_RS', engine='openpyxl', index=False)
 
 # with pd.ExcelWriter('Samples/2020-12-26' + '/Result2020-12-27.xlsx') as writer:
 #     df_unique.to_excel(writer, sheet_name='SAA_HS_RS', engine='openpyxl', index=False)
