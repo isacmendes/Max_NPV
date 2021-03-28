@@ -1,4 +1,0 @@
-Problemas no arquivo (07.2020)
-
-- A linha número 2 estava quebrada (os 2 últimos nós sucessores estavam na 3a linha);
-- A linha 19 (referente ao nó 18) apresentava um sucessor de número 0. Mas não existe o sucessor 0;
